@@ -1,6 +1,7 @@
 import { Routes, Route, Outlet, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import Battle from "./pages/Battle";
+import ActiveLink from "./components/ActiveLink";
 
 const App = () => {
   return (
@@ -25,10 +26,10 @@ function Layout() {
       <nav className="container mx-auto">
         <ul className="flex gap-3 leading-9">
           <li>
-            <Link to="/">Popular</Link>
+            <ActiveLink to="/">Popular</ActiveLink>
           </li>
           <li>
-            <Link to="/battle">Battle</Link>
+            <ActiveLink to="/battle">Battle</ActiveLink>
           </li>
         </ul>
       </nav>
