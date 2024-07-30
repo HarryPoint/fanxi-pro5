@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export function updateQueryParam(key, value) {
   const url = new URL(window.location);
@@ -66,26 +67,32 @@ export class Api {
         return response;
       },
       function (error) {
-        console.log("error: ", error);
-        window.alert(error.message);
+        // window.alert(error.message);
+        if (error.config?.tips) {
+          toast(error.message);
+        }
         return Promise.reject(error);
       }
     );
   }
-  async fetch(params) {
+  async fetch(params, options = {}) {
     const key = JSON.stringify(params);
     const cacheData = this.#cache.get(key);
     if (cacheData) {
       return cacheData;
     }
-    const res = await this.axios(params);
+    const res = await this.axios({
+      tips: true,
+      ...params,
+      ...options,
+    });
     this.#cache.set(key, res);
     return res;
   }
   // https://api.github.com/search/repositories?q=stars:>1&sort=stars&order=desc&type=Repositories&page=1&per_page=1
-  async getRepositories(query) {
+  async getRepositories(query, options = {}) {
     const { page, per_page, q, sort, order, type } = query;
-    const res = await this.fetch({
+    return this.fetch({
       url: "/search/repositories",
       params: {
         page,
@@ -95,8 +102,16 @@ export class Api {
         order,
         type,
       },
+      ...options,
     });
-    return res;
+  }
+  async getUser(username: string, options = { tips: false }) {
+    return this.fetch(
+      {
+        url: `/user/${username}`,
+      },
+      options
+    );
   }
 }
 

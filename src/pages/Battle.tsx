@@ -1,7 +1,34 @@
+import { useState } from "react";
 import Icon from "../components/Icon";
+import { api } from "../utils";
 
-const BattleInput: React.FC<{ label: string }> = (props) => {
-  const { label } = props;
+const BattleInput: React.FC<{
+  label: string;
+  info: any;
+  onSubmit: (arg: any) => void;
+}> = (props) => {
+  const { label, onSubmit } = props;
+  const [inputText, setInputText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
+
+  const handleFetch = async () => {
+    setErrMsg("");
+    if (inputText) {
+      setLoading(true);
+      try {
+        const data = await api.getUser(inputText);
+        console.log("data: ", data);
+        onSubmit(data);
+      } catch (err) {
+        setErrMsg(err?.message ?? "request error");
+        console.log("err: ", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border">
       <label className="text-sm font-medium leading-6 text-gray-900">
@@ -13,21 +40,27 @@ const BattleInput: React.FC<{ label: string }> = (props) => {
             type="text"
             className="block w-full rounded-md border-0 py-1.5 pl-4 pr-6 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-500 sm:text-sm sm:leading-6"
             placeholder="输入 Github 用户名，获取用户信息"
-            defaultValue=""
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
           />
         </div>
         <button
           type="button"
           className="ml-2 disabled:cursor-not-allowed disabled:opacity-50 bg-green-100 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-green-200"
+          disabled={loading}
+          onClick={handleFetch}
         >
           SUBMIT
         </button>
       </div>
+      <div className="text-red-500">{errMsg}</div>
     </div>
   );
 };
 
 const Battle: React.FC = () => {
+  const [playerOne, setPlayerOne] = useState(null);
+  const [playerTwo, setPlayerTwo] = useState(null);
   return (
     <div className="container mx-auto">
       <div>
@@ -54,8 +87,16 @@ const Battle: React.FC = () => {
         </div>
         <h4 className="text-3xl text-center mt-12">Players</h4>
         <div className="grid grid-cols-2 gap-8 py-3">
-          <BattleInput label="Player One"></BattleInput>
-          <BattleInput label="Player Two"></BattleInput>
+          <BattleInput
+            label="Player One"
+            info={playerOne}
+            onSubmit={setPlayerOne}
+          />
+          <BattleInput
+            label="Player Two"
+            info={playerTwo}
+            onSubmit={setPlayerTwo}
+          />
         </div>
       </div>
     </div>
