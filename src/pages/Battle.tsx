@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Icon from "../components/Icon";
 import { api } from "../utils";
 
@@ -7,10 +8,15 @@ const BattleInput: React.FC<{
   info: any;
   onSubmit: (arg: any) => void;
 }> = (props) => {
-  const { label, onSubmit } = props;
+  const { label, info, onSubmit } = props;
   const [inputText, setInputText] = useState("");
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    setSubmitted(false);
+  }, [inputText]);
 
   const handleFetch = async () => {
     setErrMsg("");
@@ -19,9 +25,12 @@ const BattleInput: React.FC<{
       try {
         const data = await api.getUser(inputText);
         console.log("data: ", data);
+        setSubmitted(true);
         onSubmit(data);
       } catch (err) {
-        setErrMsg(err?.message ?? "request error");
+        setErrMsg(
+          err?.response?.data?.message ?? err?.message ?? "request error"
+        );
         console.log("err: ", err);
       } finally {
         setLoading(false);
@@ -43,24 +52,42 @@ const BattleInput: React.FC<{
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
           />
+          {submitted && info && (
+            <Icon
+              type="icon-check"
+              className="absolute right-2 top-2 text-green-600"
+            />
+          )}
         </div>
         <button
           type="button"
-          className="ml-2 disabled:cursor-not-allowed disabled:opacity-50 bg-green-100 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-green-200"
-          disabled={loading}
+          className="ml-2 w-20 h-9 text-center disabled:cursor-not-allowed disabled:opacity-50 bg-green-100 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-green-200"
+          disabled={submitted || loading}
           onClick={handleFetch}
         >
-          SUBMIT
+          {loading ? (
+            <Icon type="icon-sync" className="mx-auto text-lg animate-spin" />
+          ) : submitted ? (
+            <Icon type="icon-stop" className="mx-auto text-lg" />
+          ) : (
+            <span>SUBMIT</span>
+          )}
         </button>
       </div>
       <div className="text-red-500">{errMsg}</div>
+      {submitted && info && !loading && (
+        <div className="flex justify-center">
+          <img className="w-28 aspect-square" src={info.avatar_url} />
+        </div>
+      )}
     </div>
   );
 };
 
 const Battle: React.FC = () => {
-  const [playerOne, setPlayerOne] = useState(null);
-  const [playerTwo, setPlayerTwo] = useState(null);
+  const navigate = useNavigate();
+  const [playerOne, setPlayerOne] = useState<any>(null);
+  const [playerTwo, setPlayerTwo] = useState<any>(null);
   return (
     <div className="container mx-auto">
       <div>
@@ -85,7 +112,21 @@ const Battle: React.FC = () => {
             </div>
           </div>
         </div>
-        <h4 className="text-3xl text-center mt-12">Players</h4>
+        <div className="text-3xl text-center mt-12">
+          <h4>Players</h4>
+          {playerOne && playerTwo ? (
+            <button
+              onClick={() =>
+                navigate({
+                  pathname: "/result",
+                  search: `?playerOne=${playerOne?.login}&playerTwo=${playerTwo?.login}`,
+                })
+              }
+            >
+              Battle
+            </button>
+          ) : null}
+        </div>
         <div className="grid grid-cols-2 gap-8 py-3">
           <BattleInput
             label="Player One"

@@ -108,7 +108,7 @@ export class Api {
   async getUser(username: string, options = { tips: false }) {
     return this.fetch(
       {
-        url: `/user/${username}`,
+        url: `/users/${username}`,
       },
       options
     );
