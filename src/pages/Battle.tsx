@@ -1,4 +1,4 @@
-import { KeyboardEventHandler, useEffect, useState } from "react";
+import { KeyboardEventHandler, ReactElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Icon from "@/components/Icon";
 import { api } from "@/utils";
@@ -91,35 +91,35 @@ const BattleInput: React.FC<{
   );
 };
 
+const InsItem: React.FC<{ title: string; icon: string }> = (props) => {
+  const { title, icon } = props;
+  return (
+    <div>
+      <p className="text-sm leading-5 h-10 lg:text-2xl">{title}</p>
+      <div className="mt-4 mx-auto bg-sky-100 w-3/5 lg:w-2/5 aspect-square flex items-center justify-center rounded-full hover:scale-110 transition-transform duration-300">
+        <Icon
+          type={icon}
+          className="w-14 h-14 lg:w-20 lg:h-20 text-orange-600"
+        />
+      </div>
+    </div>
+  );
+};
+
 const Battle: React.FC = () => {
   const navigate = useNavigate();
   const [playerOne, setPlayerOne] = useState<any>(null);
   const [playerTwo, setPlayerTwo] = useState<any>(null);
   return (
-    <div className="container mx-auto ">
+    <div className="container mx-auto px-2">
       <div className="min-h-svh flex flex-col justify-center items-stretch gap-12">
         <h3 className="text-4xl text-center">Instructions</h3>
-        <div className="flex justify-center items-center gap-5 *:w-60 mt-5 text-center">
-          <div>
-            <p>Enter two Github users</p>
-            <div className="mt-4 mx-auto bg-sky-100 w-32 h-32 flex items-center justify-center rounded-full hover:scale-110 transition-transform duration-300">
-              <Icon type="icon-team" className="w-20 h-20 text-orange-600" />
-            </div>
-          </div>
-          <div>
-            <p>Battle</p>
-            <div className="mt-4 mx-auto bg-sky-100 w-32 h-32 flex items-center justify-center rounded-full hover:scale-110 transition-transform duration-300">
-              <Icon type="icon-send" className="w-20 h-20 text-orange-600" />
-            </div>
-          </div>
-          <div>
-            <p>See the winner</p>
-            <div className="mt-4 mx-auto bg-sky-100 w-32 h-32 flex items-center justify-center rounded-full hover:scale-110 transition-transform duration-300">
-              <Icon type="icon-trophy" className="w-20 h-20 text-orange-600" />
-            </div>
-          </div>
+        <div className="grid grid-cols-3 gap-5 mt-5 text-center">
+          <InsItem title="Enter two Github users" icon="icon-team"></InsItem>
+          <InsItem title="Battle" icon="icon-send" />
+          <InsItem title="See the winner" icon="icon-trophy" />
         </div>
-        <div className="text-3xl text-center mt-12">
+        <div className="text-3xl text-center mt-2 lg:mt-12">
           <h4>Players</h4>
           {playerOne && playerTwo ? (
             <button
@@ -136,7 +136,7 @@ const Battle: React.FC = () => {
             </button>
           ) : null}
         </div>
-        <div className="grid grid-cols-2 gap-8 py-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 py-3">
           <BattleInput
             label="Player One"
             info={playerOne}

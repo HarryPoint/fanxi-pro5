@@ -6,7 +6,7 @@ import Icon from "@/components/Icon";
 const ItemInfo: React.FC<{ data: any; title: string }> = (props) => {
   const { data, title } = props;
   return (
-    <div className="w-72 p-2 shadow-lg border rounded-lg hover:scale-110 transition-all">
+    <div className="p-2 shadow-lg border rounded-lg hover:scale-110 transition-all">
       <h4 className="text-center text-2xl">{title}</h4>
       <img className="w-full aspect-square" src={data?.avatar_url} />
       <div className="text-center leading-10">Scores: {data?.public_repos}</div>
@@ -81,8 +81,8 @@ const Result = () => {
         </div>
       )}
       {!loading && (
-        <div>
-          <div className="flex justify-center items-start gap-28">
+        <div className="px-2">
+          <div className="grid grid-cols-2 gap-2 lg:gap-28">
             <ItemInfo
               data={playerOneInfo}
               title={

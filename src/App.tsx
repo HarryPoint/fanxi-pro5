@@ -25,7 +25,7 @@ function Layout() {
     <>
       {/* A "layout route" is a good place to put markup you want to
             share across all the pages on your site, like navigation. */}
-      <nav className="container mx-auto sticky">
+      <nav className="container px-2 mx-auto sticky">
         <ul className="flex gap-3 leading-9">
           <li>
             <ActiveLink to="/">Popular</ActiveLink>
