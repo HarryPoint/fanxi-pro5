@@ -36,6 +36,7 @@ const ItemInfo: React.FC<{ data: any; title: string }> = (props) => {
 const Result = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [loading, setLoading] = useState(true);
   const playerOne = searchParams.get("playerOne");
   const playerTwo = searchParams.get("playerTwo");
   const [playerOneInfo, setPlayerOneInfo] = useState<any>(null);
@@ -45,11 +46,14 @@ const Result = () => {
       Promise.all([
         api.getUser(playerOne, { tips: true }),
         api.getUser(playerTwo, { tips: true }),
-      ]).then(([{ data: info1 }, { data: info2 }]) => {
-        console.log("info1, info2: ", info1, info2);
-        setPlayerOneInfo(info1);
-        setPlayerTwoInfo(info2);
-      });
+      ])
+        .then(([{ data: info1 }, { data: info2 }]) => {
+          setPlayerOneInfo(info1);
+          setPlayerTwoInfo(info2);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [playerOne, playerTwo]);
 
@@ -71,32 +75,41 @@ const Result = () => {
 
   return (
     <div className="container mx-auto">
-      <div className="flex justify-center items-start gap-28">
-        <ItemInfo
-          data={playerOneInfo}
-          title={
-            winnerInfo && winnerInfo.id === playerOneInfo.id
-              ? "winner"
-              : "loser"
-          }
-        />
-        <ItemInfo
-          data={playerTwoInfo}
-          title={
-            winnerInfo && winnerInfo.id === playerTwoInfo.id
-              ? "winner"
-              : "loser"
-          }
-        />
-      </div>
-      <div className="flex justify-center py-9">
-        <button
-          className="ml-2 h-9 text-center disabled:cursor-not-allowed disabled:opacity-50 bg-green-100 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-green-200"
-          onClick={handleRest}
-        >
-          RESET
-        </button>
-      </div>
+      {loading && (
+        <div className="h-96 flex justify-center items-center">
+          <div className="loader"></div>
+        </div>
+      )}
+      {!loading && (
+        <div>
+          <div className="flex justify-center items-start gap-28">
+            <ItemInfo
+              data={playerOneInfo}
+              title={
+                winnerInfo && winnerInfo.id === playerOneInfo.id
+                  ? "winner"
+                  : "loser"
+              }
+            />
+            <ItemInfo
+              data={playerTwoInfo}
+              title={
+                winnerInfo && winnerInfo.id === playerTwoInfo.id
+                  ? "winner"
+                  : "loser"
+              }
+            />
+          </div>
+          <div className="flex justify-center py-9">
+            <button
+              className="ml-2 h-9 text-center disabled:cursor-not-allowed disabled:opacity-50 bg-green-100 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-green-200"
+              onClick={handleRest}
+            >
+              RESET
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
