@@ -87,16 +87,16 @@ const Result = () => {
               data={playerOneInfo}
               title={
                 winnerInfo && winnerInfo.id === playerOneInfo.id
-                  ? "winner"
-                  : "loser"
+                  ? "Winner"
+                  : "Loser"
               }
             />
             <ItemInfo
               data={playerTwoInfo}
               title={
                 winnerInfo && winnerInfo.id === playerTwoInfo.id
-                  ? "winner"
-                  : "loser"
+                  ? "Winner"
+                  : "Loser"
               }
             />
           </div>
