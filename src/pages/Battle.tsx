@@ -38,6 +38,12 @@ const BattleInput: React.FC<{
     }
   };
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleFetch();
+    }
+  };
+
   return (
     <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border">
       <label className="text-sm font-medium leading-6 text-gray-900">
@@ -51,6 +57,7 @@ const BattleInput: React.FC<{
             placeholder="输入 Github 用户名，获取用户信息"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           {submitted && info && (
             <Icon
