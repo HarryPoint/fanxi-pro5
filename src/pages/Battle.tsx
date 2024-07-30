@@ -24,14 +24,12 @@ const BattleInput: React.FC<{
       setLoading(true);
       try {
         const { data } = await api.getUser(inputText);
-        console.log("data: ", data);
         setSubmitted(true);
         onSubmit(data);
       } catch (err) {
         setErrMsg(
           err?.response?.data?.message ?? err?.message ?? "request error"
         );
-        console.log("err: ", err);
       } finally {
         setLoading(false);
       }

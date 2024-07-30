@@ -60,7 +60,6 @@ const List = (props) => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    console.log("useEffect: ----", show);
     if (show) {
       fetchData({
         page,
