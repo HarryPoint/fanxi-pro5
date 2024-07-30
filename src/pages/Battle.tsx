@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { KeyboardEventHandler, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Icon from "../components/Icon";
-import { api } from "../utils";
+import Icon from "@/components/Icon";
+import { api } from "@/utils";
 
 const BattleInput: React.FC<{
   label: string;
@@ -23,7 +23,7 @@ const BattleInput: React.FC<{
     if (inputText) {
       setLoading(true);
       try {
-        const data = await api.getUser(inputText);
+        const { data } = await api.getUser(inputText);
         console.log("data: ", data);
         setSubmitted(true);
         onSubmit(data);
@@ -38,7 +38,7 @@ const BattleInput: React.FC<{
     }
   };
 
-  const handleKeyDown = (e: KeyboardEvent) => {
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === "Enter") {
       handleFetch();
     }
@@ -83,7 +83,7 @@ const BattleInput: React.FC<{
       </div>
       <div className="text-red-500">{errMsg}</div>
       {submitted && info && !loading && (
-        <div className="flex justify-center">
+        <div className="flex justify-center p-9">
           <img className="w-28 aspect-square" src={info.avatar_url} />
         </div>
       )}
@@ -96,8 +96,8 @@ const Battle: React.FC = () => {
   const [playerOne, setPlayerOne] = useState<any>(null);
   const [playerTwo, setPlayerTwo] = useState<any>(null);
   return (
-    <div className="container mx-auto">
-      <div>
+    <div className="container mx-auto ">
+      <div className="min-h-svh flex flex-col justify-center items-stretch gap-12">
         <h3 className="text-4xl text-center">Instructions</h3>
         <div className="flex justify-center items-center gap-5 *:w-60 mt-5 text-center">
           <div>
@@ -123,6 +123,8 @@ const Battle: React.FC = () => {
           <h4>Players</h4>
           {playerOne && playerTwo ? (
             <button
+              type="button"
+              className="ml-2 h-9 text-center disabled:cursor-not-allowed disabled:opacity-50 bg-sky-100 inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-sky-200"
               onClick={() =>
                 navigate({
                   pathname: "/result",

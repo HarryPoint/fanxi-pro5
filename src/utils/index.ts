@@ -69,7 +69,7 @@ export class Api {
       function (error) {
         // window.alert(error.message);
         if (error.config?.tips) {
-          toast(error.message);
+          toast(error.response?.data?.message ?? error.message);
         }
         return Promise.reject(error);
       }
